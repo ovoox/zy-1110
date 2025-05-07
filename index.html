@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .dynamic-island {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            transform-origin: center;
+            width: auto;
+            max-width: 80%;
+            height: 40px;
+            background-color: #000;
+            border-radius: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.4s ease-in-out, height 0.6s ease-in-out, border-radius 0.6s ease-in-out, box-shadow 0.5s ease-in-out, opacity 0.5s ease-in-out; overflow: visible;
+            z-index: 1000;
+            padding-left: 35px;
+            padding-right: 20px;
+            opacity: 0;
+            box-shadow: 0 0px 10px rgba(0, 0, 0, 0.45);
+        }
+
+        .dynamic-island.active {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .dynamic-island.inactive {
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+        }
+
+        .island-content {
+            opacity: 0;
+            transition: opacity 0.9s ease-in-out, filter 0.8s ease-in-out;
+            font-weight: bold;
+            flex-grow: 1;
+            text-align: right;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dynamic-island.active .island-content {
+            opacity: 1;
+        }
+
+        .dynamic-island img {
+            position: absolute;
+            left: 10px;
+            width: 20px;
+            height: 20px;
+            object-fit: cover;
+            transition: height 0.8s ease-in-out, width 0.8s ease-in-out, filter 0.8s ease-in-out;
+        }
+
+        .dynamic-island:hover {
+            height: 60px;
+            border-radius: 50px;
+        }
+
+        .bars {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
+        }
+
+        .bars p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 16px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            text-align: right;
+        }
+
+        .bar {
+            width: 2px;
+            height: 13px;
+            background-color: green;
+            animation: bounce 1s infinite ease-in-out;
+            animation-direction: alternate;
+        }
+
+        .bar:nth-child(1) { animation-duration: 1s; }
+        .bar:nth-child(2) { animation-duration: 0.9s; }
+        .bar:nth-child(3) { animation-duration: 0.8s; }
+        .bar:nth-child(4) { animation-duration: 0.7s; }
+        .bar:nth-child(5) { animation-duration: 0.6s; }
+        .bar:nth-child(6) { animation-duration: 0.9s; }
+        .bar:nth-child(7) { animation-duration: 0.7s; }
+
+        @keyframes bounce {
+            0% {
+                transform: scaleY(0.3);
+                background-color: green;
+            }
+            50% {
+                transform: scaleY(1);
+                background-color: orange;
+            }
+            100% {
+                transform: scaleY(0.3);
+                background-color: green;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-island inactive" id="dynamicIsland" style="opacity: 0;">
+        <img src="https://img.alicdn.com/imgextra/i1/2210123621994/O1CN01lajerM1QbIl9aoHcJ_!!2210123621994.png" alt="通知图标" width="30" height="30">
+        <div class="island-content">
+            <div class="bars"><p>欢迎来到知鱼杂记</p>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            triggerIsland();
+
+            const currentUrl = window.location.pathname;
+            let displayText = "欢迎来到知鱼杂记";
+
+            if (currentUrl.includes('/message/')) {
+                displayText = "正在访问知鱼杂记消息页面";
+            } else if (currentUrl.includes('/user/')) {
+                displayText = "欢迎来到知鱼杂记用户中心";
+            } else if (document.body.classList.contains('home') || document.body.classList.contains('front-page')) {
+                displayText = "欢迎来到知鱼杂记";
+            } else if (document.body.classList.contains('single')) {
+                const cleanTitle = document.title || "当前页面";
+                displayText = "正在访问：" + cleanTitle;
+            } else if (document.body.classList.contains('category')) {
+                const category = "分类页面";
+                displayText = "正在访问：" + category + " 分类";
+            } else if (document.body.classList.contains('page')) {
+                const cleanTitle = document.title || "当前页面";
+                displayText = "正在访问：" + cleanTitle;
+            } 
+            document.querySelector('.bars p').innerText = displayText;
+        };
+
+        function triggerIsland() {
+            const island = document.getElementById('dynamicIsland');
+            if (island) {
+                island.style.opacity = 1; 
+                island.classList.add('active'); 
+                island.classList.remove('inactive');
+
+                setTimeout(() => {
+                    closeIsland();
+                }, 3000);
+            }
+        }
+
+        function closeIsland() {
+            const island = document.getElementById('dynamicIsland');
+            if (island) {
+                island.classList.remove('active');
+                island.classList.add('inactive');
+                setTimeout(() => {
+                    island.style.opacity = 0;
+                }, 600);
+            }
+        }
+    </script>
+</body>
+</html>
